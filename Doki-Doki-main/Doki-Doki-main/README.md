@@ -1,2 +1,0 @@
-# Doki-Doki
-trabajo-movil
