@@ -39,6 +39,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -63,8 +64,9 @@ import com.example.doki_doki.viewmodel.LoginViewModel
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    alIngresar: (nombreUsuario: String) -> Unit
-) {
+    alIngresar: (nombreUsuario: String) -> Unit,
+    alIrARegistro: () -> Unit
+)  {
     // cada vez que cambia el estado en el viewmodel la pantalla se actualiza sola
     val estado by viewModel.estado.collectAsState()
 
@@ -205,6 +207,13 @@ fun LoginScreen(
             } else {
                 Text("Ingresar")
             }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // botón para ir a la pantalla de registro
+        TextButton(onClick = alIrARegistro) {
+            Text("¿No tienes cuenta? Regístrate")
         }
     }
 }

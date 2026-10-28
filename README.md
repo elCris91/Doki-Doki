@@ -14,6 +14,7 @@ Los datos de investigadores y proyectos son ficticios.
 - Joaquín Rodriguez
 ## Funcionalidades
 - Inicio de sesión con validación de campos y contraseña guardada como hash (SHA-256)
+- Registro de usuarios con validación de cada campo y modal de confirmación
 - Listado de investigadores con buscador por nombre y filtro por línea de investigación
 - Modal con el detalle de cada investigador y sus proyectos
 - Perfil de usuario con foto tomada desde la cámara

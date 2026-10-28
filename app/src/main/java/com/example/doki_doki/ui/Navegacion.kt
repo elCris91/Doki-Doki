@@ -13,10 +13,12 @@ import com.example.doki_doki.repository.InvestigadorRepository
 import com.example.doki_doki.repository.UsuarioRepository
 import com.example.doki_doki.viewmodel.ListadoViewModel
 import com.example.doki_doki.viewmodel.LoginViewModel
+import com.example.doki_doki.viewmodel.RegistroViewModel
 
 // nombres de las rutas, así no hay que escribirlos a mano en cada lado
 object Rutas {
     const val LOGIN = "login"
+    const val REGISTRO = "registro"
     const val INICIO = "inicio"
     const val PERFIL = "perfil"
 }
@@ -51,7 +53,19 @@ fun Navegacion(
                         navController.navigate(Rutas.INICIO) {
                             popUpTo(Rutas.LOGIN) { inclusive = true }
                         }
-                    }
+                    },
+                    alIrARegistro = { navController.navigate(Rutas.REGISTRO) }
+                )
+            }
+
+            composable(Rutas.REGISTRO) {
+                val registroViewModel: RegistroViewModel =
+                    viewModel(factory = RegistroViewModel.fabrica(usuarioRepository))
+                RegistroScreen(
+                    viewModel = registroViewModel,
+                    // popBackStack vuelve a la pantalla anterior, o sea al login
+                    alRegistrarse = { navController.popBackStack() },
+                    alVolverALogin = { navController.popBackStack() }
                 )
             }
 
