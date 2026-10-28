@@ -4,11 +4,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.doki_doki.model.Usuario
 import com.example.doki_doki.repository.InvestigadorRepository
 import com.example.doki_doki.repository.UsuarioRepository
 import com.example.doki_doki.viewmodel.ListadoViewModel
@@ -31,6 +36,9 @@ fun Navegacion(
 ) {
     val navController = rememberNavController()
 
+    // guarda el usuario que inició sesión para mostrar sus datos en el perfil
+    var usuarioConectado by remember { mutableStateOf<Usuario?>(null) }
+
     // Scaffold con la barra inferior agregada
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -48,7 +56,8 @@ fun Navegacion(
                     viewModel(factory = LoginViewModel.fabrica(usuarioRepository))
                 LoginScreen(
                     viewModel = loginViewModel,
-                    alIngresar = {
+                    alIngresar = { usuario ->
+                        usuarioConectado = usuario
                         // saca el login del historial, así con "atrás" no se vuelve al login
                         navController.navigate(Rutas.INICIO) {
                             popUpTo(Rutas.LOGIN) { inclusive = true }
@@ -77,8 +86,8 @@ fun Navegacion(
             }
 
             composable(Rutas.PERFIL) {
-                // Vista de perfil con la cámara
-                PerfilUsuarioScreen()
+                // Vista de perfil con la cámara y los datos del usuario conectado
+                PerfilUsuarioScreen(usuario = usuarioConectado)
             }
         }
     }
