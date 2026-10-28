@@ -17,42 +17,57 @@ import com.example.doki_doki.viewmodel.LoginViewModel
 object Rutas {
     const val LOGIN = "login"
     const val INICIO = "inicio/{nombreUsuario}"
-
-
+    const val FAVORITOS = "favoritos"
+    const val PERFIL = "perfil"
 
     fun inicio(nombreUsuario: String) = "inicio/${Uri.encode(nombreUsuario)}"
 }
-        //acá se fdefine que pantalla va en cada ruta
-    @Composable
-    fun Navegacion(usuarioRepository: UsuarioRepository) {
-        val navController = rememberNavController()
 
-            //esto es para que nada quede tapado por la barra que esta encima del celular
-        Scaffold(modifier = Modifier.fillMaxSize()) { espacioInterno ->
-            NavHost(
-                navController = navController,
-                startDestination = Rutas.LOGIN,
-                modifier = Modifier.padding(espacioInterno)
-            ) {
-                composable(Rutas.LOGIN) {
-                    val loginViewModel: LoginViewModel =
-                        viewModel(factory = LoginViewModel.fabrica(usuarioRepository))
-                    LoginScreen(
-                        viewModel = loginViewModel,
-                        alIngresar = { nombreUsuario ->
+// acá se define qué pantalla va en cada ruta
+@Composable
+fun Navegacion(usuarioRepository: UsuarioRepository) {
+    val navController = rememberNavController()
 
-
-                            //saca el login del historial por si queremos retroceder
-                            navController.navigate(Rutas.inicio(nombreUsuario)) {
-                                popUpTo(Rutas.LOGIN) { inclusive = true }
-                            }
+    // Scaffold con la barra inferior agregada
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
+        }
+    ) { espacioInterno ->
+        NavHost(
+            navController = navController,
+            startDestination = Rutas.LOGIN,
+            modifier = Modifier.padding(espacioInterno)
+        ) {
+            composable(Rutas.LOGIN) {
+                val loginViewModel: LoginViewModel =
+                    viewModel(factory = LoginViewModel.fabrica(usuarioRepository))
+                LoginScreen(
+                    viewModel = loginViewModel,
+                    alIngresar = { nombreUsuario ->
+                        // saca el login del historial por si queremos retroceder
+                        navController.navigate(Rutas.inicio(nombreUsuario)) {
+                            popUpTo(Rutas.LOGIN) { inclusive = true }
                         }
-                    )
-                }
-                composable(Rutas.INICIO) { entrada ->
-                    val nombreUsuario = entrada.arguments?.getString("nombreUsuario").orEmpty()
-                    InicioScreen(nombreUsuario = nombreUsuario)
-                }
+                    }
+                )
+            }
+
+            composable(Rutas.INICIO) { entrada ->
+                val nombreUsuario = entrada.arguments?.getString("nombreUsuario").orEmpty()
+                InicioScreen(nombreUsuario = nombreUsuario)
+            }
+
+            composable(Rutas.FAVORITOS) {
+                // Vista de favoritos (se puede usar InicioScreen mientras se implementa)
+                InicioScreen(nombreUsuario = "Favoritos")
+            }
+
+            composable(Rutas.PERFIL) {
+                // Vista de perfil con la cámara
+                PerfilUsuarioScreen()
             }
         }
     }
+}
