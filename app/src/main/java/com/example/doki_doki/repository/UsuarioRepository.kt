@@ -8,11 +8,21 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
 
     suspend fun iniciarSesion(correo: String, contrasena: String): Usuario? {
 
-        //verifica el login y devuelve el usuario si es que existe el correo y la contraseña es correcta, sino da null
-
 
         val usuario = usuarioDao.buscarPorCorreo(correo.trim().lowercase()) ?: return null
         return if (usuario.contrasenaHash == hashear(contrasena)) usuario else null
+    }
+    suspend fun existeCorreo(correo: String): Boolean =
+        usuarioDao.buscarPorCorreo(correo.trim().lowercase()) != null
+
+    suspend fun registrar(nombre: String, correo: String, contrasena: String) {
+        usuarioDao.insertar(
+            Usuario(
+                nombre = nombre.trim(),
+                correo = correo.trim().lowercase(),
+                contrasenaHash = hashear(contrasena)
+            )
+        )
     }
 
     private fun hashear(texto: String): String {
