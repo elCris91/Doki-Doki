@@ -42,10 +42,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
+import com.example.doki_doki.model.Usuario
 import java.io.File
 
+// muestra la foto de perfil (cámara) y los datos del usuario que inició sesión
 @Composable
-fun PerfilUsuarioScreen() {
+fun PerfilUsuarioScreen(usuario: Usuario?) {
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -171,7 +173,7 @@ fun PerfilUsuarioScreen() {
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Text(text = "Usuario Investigador")
+                Text(text = usuario?.nombre.orEmpty())
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
@@ -179,7 +181,7 @@ fun PerfilUsuarioScreen() {
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Text(text = "usuario@cenamad.cl")
+                Text(text = usuario?.correo.orEmpty())
 
                 Spacer(modifier = Modifier.height(4.dp))
 
