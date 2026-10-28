@@ -49,7 +49,7 @@ fun PerfilUsuarioScreen() {
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-    var permisoConcedido by remember { mutableStateOf(false) }
+
 
     // Lanzador de la cámara para tomar la foto en alta resolución
     val takePictureLauncher = rememberLauncherForActivityResult(
@@ -64,7 +64,7 @@ fun PerfilUsuarioScreen() {
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        permisoConcedido = granted
+
         if (granted) {
             val file = File.createTempFile("profile_photo", ".jpg", context.cacheDir)
             file.deleteOnExit()

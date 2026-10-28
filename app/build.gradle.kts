@@ -4,8 +4,6 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-
-
 android {
     namespace = "com.example.doki_doki"
     compileSdk {
@@ -38,7 +36,6 @@ android {
     buildFeatures {
         compose = true
     }
-    buildToolsVersion = "36.0.0"
 }
 
 dependencies {
@@ -62,5 +59,4 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
-
 }
