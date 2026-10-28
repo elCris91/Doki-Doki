@@ -30,10 +30,6 @@ fun RegistroScreen(
     var verContrasena by remember { mutableStateOf(false) }
     var verConfirmar by remember { mutableStateOf(false) }
 
-    LaunchedEffect(estado.registroExitoso) {
-        if (estado.registroExitoso) alRegistrarse()
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -133,5 +129,15 @@ fun RegistroScreen(
         ) {
             Text("¿Ya tienes cuenta? Inicia sesión")
         }
+    }
+    if (estado.registroExitoso) {
+        AlertDialog(
+            onDismissRequest = alRegistrarse,
+            title = { Text("Cuenta creada") },
+            text = { Text("Tu cuenta se creó correctamente. Ahora puedes iniciar sesión.") },
+            confirmButton = {
+                TextButton(onClick = alRegistrarse) { Text("Ir al login") }
+            }
+        )
     }
 }
