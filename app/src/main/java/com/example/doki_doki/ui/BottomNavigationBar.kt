@@ -30,7 +30,7 @@ fun BottomNavigationBar(navController: NavController) {
     val rutaActual = navBackStackEntry.value?.destination?.route
 
     // en el login no se muestra la barra
-    if (rutaActual != Rutas.LOGIN) {
+    if (rutaActual != Rutas.LOGIN && rutaActual != Rutas.REGISTRO) {
         NavigationBar(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
