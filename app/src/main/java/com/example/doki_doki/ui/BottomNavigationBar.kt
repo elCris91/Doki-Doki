@@ -1,7 +1,6 @@
 package com.example.doki_doki.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
@@ -16,8 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 sealed class ItemNavegacion(val ruta: String, val icono: ImageVector, val titulo: String) {
-    object Inicio : ItemNavegacion(Rutas.inicio("Usuario"), Icons.Default.Home, "Inicio")
-    object Favoritos : ItemNavegacion(Rutas.FAVORITOS, Icons.Default.Favorite, "Favoritos")
+    object Inicio : ItemNavegacion(Rutas.INICIO, Icons.Default.Home, "Inicio")
     object Perfil : ItemNavegacion(Rutas.PERFIL, Icons.Default.Person, "Mi Perfil")
 }
 
@@ -25,23 +23,20 @@ sealed class ItemNavegacion(val ruta: String, val icono: ImageVector, val titulo
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         ItemNavegacion.Inicio,
-        ItemNavegacion.Favoritos,
         ItemNavegacion.Perfil
     )
 
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val rutaActual = navBackStackEntry.value?.destination?.route
 
+    // en el login no se muestra la barra
     if (rutaActual != Rutas.LOGIN) {
         NavigationBar(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             items.forEach { item ->
-                val seleccionado = when (item) {
-                    is ItemNavegacion.Inicio -> rutaActual?.startsWith("inicio") == true
-                    else -> rutaActual == item.ruta
-                }
+                val seleccionado = rutaActual == item.ruta
 
                 NavigationBarItem(
                     icon = { Icon(imageVector = item.icono, contentDescription = item.titulo) },
@@ -50,9 +45,8 @@ fun BottomNavigationBar(navController: NavController) {
                     onClick = {
                         if (!seleccionado) {
                             navController.navigate(item.ruta) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
+                                // vuelve al inicio sin ir apilando pantallas
+                                popUpTo(Rutas.INICIO) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }
