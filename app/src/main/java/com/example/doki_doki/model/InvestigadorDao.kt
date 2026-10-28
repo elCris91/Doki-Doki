@@ -10,8 +10,7 @@ interface InvestigadorDao {
     @Query("SELECT * FROM investigadores ORDER BY nombre")
     suspend fun obtenerTodos(): List<Investigador>
 
-    @Query("SELECT * FROM investigadores WHERE id = :id")
-    suspend fun obtenerPorId(id: Int): Investigador?
+
 
     // proyectos donde participa un investigador, se une con la tabla intermedia
     @Query(

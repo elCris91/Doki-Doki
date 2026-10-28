@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
 abstract class AppDatabase : RoomDatabase() {
     abstract fun usuarioDao(): UsuarioDao
     abstract fun investigadorDao(): InvestigadorDao
-    abstract fun proyectoDao(): ProyectoDao
+
 }
 
 // base de datos de la app, aca se registraran todas las tablas

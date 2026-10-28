@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
     private val usuarioRepository by lazy { UsuarioRepository(baseDeDatos.usuarioDao()) }
 
     private val investigadorRepository by lazy {
-        InvestigadorRepository(baseDeDatos.investigadorDao(), baseDeDatos.proyectoDao())
+        InvestigadorRepository(baseDeDatos.investigadorDao())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
