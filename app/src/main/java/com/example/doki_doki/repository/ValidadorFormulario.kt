@@ -6,7 +6,7 @@ object ValidadorFormulario {
 
     fun validarCorreo(correo: String): String? = when {
         correo.isBlank() -> "Ingresa tu correo"
-        !Patterns.EMAIL_ADDRESS.matcher(correo).matches() -> "Ingresa un correo válido"
+        !Patterns.EMAIL_ADDRESS.matcher(correo.trim()).matches() -> "Ingresa un correo válido"
         else -> null
     }
 
