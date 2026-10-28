@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.room.Room
 import com.example.doki_doki.model.AppDatabase
 import com.example.doki_doki.model.DatosIniciales
+import com.example.doki_doki.repository.InvestigadorRepository
 import com.example.doki_doki.repository.UsuarioRepository
 import com.example.doki_doki.ui.Navegacion
 import com.example.doki_doki.ui.theme.DokiDokiTheme
@@ -24,12 +25,19 @@ class MainActivity : ComponentActivity() {
 
     private val usuarioRepository by lazy { UsuarioRepository(baseDeDatos.usuarioDao()) }
 
+    private val investigadorRepository by lazy {
+        InvestigadorRepository(baseDeDatos.investigadorDao(), baseDeDatos.proyectoDao())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             DokiDokiTheme {
-                Navegacion(usuarioRepository = usuarioRepository)
+                Navegacion(
+                    usuarioRepository = usuarioRepository,
+                    investigadorRepository = investigadorRepository
+                )
             }
         }
     }
