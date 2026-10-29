@@ -12,6 +12,10 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
         val usuario = usuarioDao.buscarPorCorreo(correo.trim().lowercase()) ?: return null
         return if (usuario.contrasenaHash == hashear(contrasena)) usuario else null
     }
+
+    // trae un usuario por su correo, se usa para recuperar la sesión guardada
+    suspend fun obtenerPorCorreo(correo: String): Usuario? =
+        usuarioDao.buscarPorCorreo(correo.trim().lowercase())
     suspend fun existeCorreo(correo: String): Boolean =
         usuarioDao.buscarPorCorreo(correo.trim().lowercase()) != null
 
