@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,15 +21,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,10 +52,16 @@ import java.io.File
 
 // muestra la foto de perfil (cámara) y los datos del usuario que inició sesión
 @Composable
-fun PerfilUsuarioScreen(usuario: Usuario?) {
+fun PerfilUsuarioScreen(
+    usuario: Usuario?,
+    alCerrarSesion: () -> Unit
+) {
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    // controla si se muestra el modal para confirmar el cierre de sesión
+    var confirmarCierre by remember { mutableStateOf(false) }
 
 
     // Lanzador de la cámara para tomar la foto en alta resolución
@@ -193,5 +204,32 @@ fun PerfilUsuarioScreen(usuario: Usuario?) {
                 Text(text = "CENAMAD - Duoc UC")
             }
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // botón para cerrar sesión, primero pide confirmación con un modal
+        OutlinedButton(onClick = { confirmarCierre = true }) {
+            Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = "Cerrar sesión")
+        }
+    }
+
+    // modal de confirmación para cerrar sesión
+    if (confirmarCierre) {
+        AlertDialog(
+            onDismissRequest = { confirmarCierre = false },
+            title = { Text("Cerrar sesión") },
+            text = { Text("¿Seguro que quieres cerrar sesión?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmarCierre = false
+                    alCerrarSesion()
+                }) { Text("Cerrar sesión") }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmarCierre = false }) { Text("Cancelar") }
+            }
+        )
     }
 }

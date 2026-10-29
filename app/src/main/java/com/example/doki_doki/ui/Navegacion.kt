@@ -4,21 +4,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.doki_doki.model.Usuario
 import com.example.doki_doki.repository.InvestigadorRepository
+import com.example.doki_doki.repository.SesionRepository
 import com.example.doki_doki.repository.UsuarioRepository
 import com.example.doki_doki.viewmodel.ListadoViewModel
 import com.example.doki_doki.viewmodel.LoginViewModel
 import com.example.doki_doki.viewmodel.RegistroViewModel
+import com.example.doki_doki.viewmodel.SesionViewModel
 
 // nombres de las rutas, así no hay que escribirlos a mano en cada lado
 object Rutas {
@@ -32,12 +32,24 @@ object Rutas {
 @Composable
 fun Navegacion(
     usuarioRepository: UsuarioRepository,
-    investigadorRepository: InvestigadorRepository
+    investigadorRepository: InvestigadorRepository,
+    sesionRepository: SesionRepository
 ) {
     val navController = rememberNavController()
 
-    // guarda el usuario que inició sesión para mostrar sus datos en el perfil
-    var usuarioConectado by remember { mutableStateOf<Usuario?>(null) }
+    // la sesión vive en un viewmodel: se guarda al cerrar la app y se mantiene al girar la pantalla
+    val sesionViewModel: SesionViewModel =
+        viewModel(factory = SesionViewModel.fabrica(usuarioRepository, sesionRepository))
+    val sesion by sesionViewModel.estado.collectAsState()
+
+    // si al abrir la app había una sesión guardada, se salta el login y se va al listado
+    LaunchedEffect(sesion.revisada) {
+        if (sesion.usuario != null && navController.currentDestination?.route == Rutas.LOGIN) {
+            navController.navigate(Rutas.INICIO) {
+                popUpTo(Rutas.LOGIN) { inclusive = true }
+            }
+        }
+    }
 
     // Scaffold con la barra inferior agregada
     Scaffold(
@@ -57,7 +69,7 @@ fun Navegacion(
                 LoginScreen(
                     viewModel = loginViewModel,
                     alIngresar = { usuario ->
-                        usuarioConectado = usuario
+                        sesionViewModel.iniciarSesion(usuario)
                         // saca el login del historial, así con "atrás" no se vuelve al login
                         navController.navigate(Rutas.INICIO) {
                             popUpTo(Rutas.LOGIN) { inclusive = true }
@@ -86,8 +98,17 @@ fun Navegacion(
             }
 
             composable(Rutas.PERFIL) {
-                // Vista de perfil con la cámara y los datos del usuario conectado
-                PerfilUsuarioScreen(usuario = usuarioConectado)
+                // Vista de perfil con la cámara, los datos del usuario conectado y cerrar sesión
+                PerfilUsuarioScreen(
+                    usuario = sesion.usuario,
+                    alCerrarSesion = {
+                        sesionViewModel.cerrarSesion()
+                        // borra todo el historial y vuelve al login
+                        navController.navigate(Rutas.LOGIN) {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }
