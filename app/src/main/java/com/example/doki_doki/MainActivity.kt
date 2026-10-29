@@ -8,6 +8,7 @@ import androidx.room.Room
 import com.example.doki_doki.model.AppDatabase
 import com.example.doki_doki.model.DatosIniciales
 import com.example.doki_doki.repository.InvestigadorRepository
+import com.example.doki_doki.repository.SesionRepository
 import com.example.doki_doki.repository.UsuarioRepository
 import com.example.doki_doki.ui.Navegacion
 import com.example.doki_doki.ui.theme.DokiDokiTheme
@@ -29,6 +30,9 @@ class MainActivity : ComponentActivity() {
         InvestigadorRepository(baseDeDatos.investigadorDao())
     }
 
+    // guarda en el teléfono el correo del usuario conectado, para no pedir login cada vez
+    private val sesionRepository by lazy { SesionRepository(applicationContext) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,7 +40,8 @@ class MainActivity : ComponentActivity() {
             DokiDokiTheme {
                 Navegacion(
                     usuarioRepository = usuarioRepository,
-                    investigadorRepository = investigadorRepository
+                    investigadorRepository = investigadorRepository,
+                    sesionRepository = sesionRepository
                 )
             }
         }
