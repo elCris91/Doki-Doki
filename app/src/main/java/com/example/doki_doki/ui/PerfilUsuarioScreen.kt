@@ -42,14 +42,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
+import com.example.doki_doki.model.Usuario
 import java.io.File
 
 @Composable
-fun PerfilUsuarioScreen() {
+fun PerfilUsuarioScreen(usuario: Usuario? = null) {
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-
 
     // Lanzador de la cámara para tomar la foto en alta resolución
     val takePictureLauncher = rememberLauncherForActivityResult(
@@ -60,11 +60,11 @@ fun PerfilUsuarioScreen() {
             bitmap = bmp
         }
     }
+
     // Lanzador para solicitar el permiso nativo de la cámara
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-
         if (granted) {
             val file = File.createTempFile("profile_photo", ".jpg", context.cacheDir)
             file.deleteOnExit()
@@ -77,6 +77,7 @@ fun PerfilUsuarioScreen() {
             takePictureLauncher.launch(uri)
         }
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -91,6 +92,7 @@ fun PerfilUsuarioScreen() {
             color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(24.dp))
+
         // Contenedor visual para mostrar la foto circular
         Box(
             contentAlignment = Alignment.BottomEnd,
@@ -136,6 +138,7 @@ fun PerfilUsuarioScreen() {
                 )
             }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
@@ -147,7 +150,7 @@ fun PerfilUsuarioScreen() {
         }
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Tarjeta de datos personales organizada completamente con Column
+        // Tarjeta de datos personales con los datos reales del usuario autenticado
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -171,7 +174,8 @@ fun PerfilUsuarioScreen() {
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Text(text = "Usuario Investigador")
+                Text(text = usuario?.nombre ?: "Usuario Investigador")
+
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
@@ -179,7 +183,7 @@ fun PerfilUsuarioScreen() {
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Text(text = "usuario@cenamad.cl")
+                Text(text = usuario?.correo ?: "usuario@cenamad.cl")
 
                 Spacer(modifier = Modifier.height(4.dp))
 

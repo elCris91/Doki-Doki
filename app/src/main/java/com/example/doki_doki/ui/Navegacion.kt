@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -31,6 +33,11 @@ fun Navegacion(
 ) {
     val navController = rememberNavController()
 
+    // Se mantiene el LoginViewModel a nivel de navegación para conservar la sesión activa en Perfil
+    val loginViewModel: LoginViewModel =
+        viewModel(factory = LoginViewModel.fabrica(usuarioRepository))
+    val estadoLogin by loginViewModel.estado.collectAsState()
+
     // Scaffold con la barra inferior agregada
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -44,8 +51,6 @@ fun Navegacion(
             modifier = Modifier.padding(espacioInterno)
         ) {
             composable(Rutas.LOGIN) {
-                val loginViewModel: LoginViewModel =
-                    viewModel(factory = LoginViewModel.fabrica(usuarioRepository))
                 LoginScreen(
                     viewModel = loginViewModel,
                     alIngresar = {
@@ -77,8 +82,8 @@ fun Navegacion(
             }
 
             composable(Rutas.PERFIL) {
-                // Vista de perfil con la cámara
-                PerfilUsuarioScreen()
+                // Vista de perfil con la cámara y los datos reales del usuario logueado
+                PerfilUsuarioScreen(usuario = estadoLogin.usuarioIngresado)
             }
         }
     }
