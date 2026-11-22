@@ -1,12 +1,12 @@
 package com.example.doki_doki.repository
 
-import android.util.Patterns
-
 object ValidadorFormulario {
+
+    private val REGEX_CORREO = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
 
     fun validarCorreo(correo: String): String? = when {
         correo.isBlank() -> "Ingresa tu correo"
-        !Patterns.EMAIL_ADDRESS.matcher(correo.trim()).matches() -> "Ingresa un correo válido"
+        !REGEX_CORREO.matches(correo.trim()) -> "Ingresa un correo válido"
         else -> null
     }
 
