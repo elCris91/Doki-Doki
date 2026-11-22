@@ -58,13 +58,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.doki_doki.R
+import com.example.doki_doki.model.Usuario
 import com.example.doki_doki.viewmodel.LoginViewModel
 
 // pantalla del login, las validaciones las hace el viewmodel
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    alIngresar: (nombreUsuario: String) -> Unit,
+    alIngresar: (usuario: Usuario) -> Unit,
     alIrARegistro: () -> Unit
 )  {
     // cada vez que cambia el estado en el viewmodel la pantalla se actualiza sola
@@ -75,7 +76,7 @@ fun LoginScreen(
 
     // si el login sale bien pasamos a la otra pantalla
     LaunchedEffect(estado.usuarioIngresado) {
-        estado.usuarioIngresado?.let { usuario -> alIngresar(usuario.nombre) }
+        estado.usuarioIngresado?.let { usuario -> alIngresar(usuario) }
     }
 
     // parte en false y cambia a true para que el logo aparezca animado
