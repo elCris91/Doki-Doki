@@ -47,6 +47,23 @@ class UsuarioRepository(
         }
     }
 
+    suspend fun obtenerPorCorreo(correo: String): Usuario? {
+        val correoNormalizado = correo.trim().lowercase()
+        return try {
+            val usuarioRemoto = apiService.getUsuarios().find {
+                it.correo.trim().lowercase() == correoNormalizado
+            }
+            if (usuarioRemoto != null) {
+                guardarRespaldoLocal(usuarioRemoto)
+                usuarioRemoto
+            } else {
+                usuarioDao.buscarPorCorreo(correoNormalizado)
+            }
+        } catch (e: Exception) {
+            usuarioDao.buscarPorCorreo(correoNormalizado)
+        }
+    }
+
     suspend fun registrar(nombre: String, correo: String, contrasena: String) {
         val nuevoUsuario = Usuario(
             nombre = nombre.trim(),
